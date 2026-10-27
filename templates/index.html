@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bank Transaction Management System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="{{ url_for('static', filename='script.js') }}"
+            defer></script>
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">₹</div>
+
+            <div>
+                <h2>BankTree</h2>
+                <p>Splay Tree Banking</p>
+            </div>
+        </div>
+
+        <nav>
+            <a href="#dashboard" class="nav-link active">
+                Dashboard
+            </a>
+
+            <a href="#transaction-form" class="nav-link">
+                Manage Transactions
+            </a>
+
+            <a href="#search-section" class="nav-link">
+                Search & Delete
+            </a>
+
+            <a href="#history" class="nav-link">
+                Transaction History
+            </a>
+
+            <a href="#tree-section" class="nav-link">
+                Splay Tree
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            Advanced Data Structures
+            <span>PBL Project</span>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+        <!-- HEADER -->
+        <header class="topbar">
+
+            <div>
+                <p class="eyebrow">BANKING OPERATIONS</p>
+
+                <h1>Transaction Management</h1>
+
+                <p class="subtitle">
+                    Manage and visualize bank transactions
+                    using a Splay Tree.
+                </p>
+            </div>
+
+            <div class="status">
+                <span class="status-dot"></span>
+                Local System
+            </div>
+
+        </header>
+
+
+        <!-- MESSAGE -->
+        <div id="message"
+             class="message"
+             role="status"
+             aria-live="polite"
+             hidden>
+        </div>
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="dashboard">
+
+            <div class="stat-card">
+                <p>Total Transactions</p>
+                <h2 id="totalCount">0</h2>
+                <span>Records in Splay Tree</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Total Deposits</p>
+                <h2 id="totalDeposits">₹0.00</h2>
+                <span>Deposit transaction amount</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Total Withdrawals</p>
+                <h2 id="totalWithdrawals">₹0.00</h2>
+                <span>Withdrawal transaction amount</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Current Tree Root</p>
+                <h2 id="rootId">—</h2>
+                <span>Root transaction ID</span>
+            </div>
+
+        </section>
+
+
+        <!-- TRANSACTION MANAGEMENT -->
+        <div class="two-columns">
+
+            <!-- ADD AND UPDATE -->
+            <section class="panel" id="transaction-form">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Add / Update Transaction</h2>
+                        <p>Enter transaction details below.</p>
+                    </div>
+                </div>
+
+                <form id="transactionForm">
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label for="transactionId">
+                                Transaction ID
+                            </label>
+
+                            <input
+                                type="number"
+                                id="transactionId"
+                                min="1"
+                                max="2147483647"
+                                step="1"
+                                placeholder="e.g. 101"
+                                required>
+                        </div>
+
+
+                        <div class="field">
+                            <label for="accountId">
+                                Account Number
+                            </label>
+
+                            <input
+                                type="number"
+                                id="accountId"
+                                min="1"
+                                max="2147483647"
+                                step="1"
+                                placeholder="e.g. 5001"
+                                required>
+                        </div>
+
+
+                        <div class="field">
+                            <label for="transactionType">
+                                Transaction Type
+                            </label>
+
+                            <select id="transactionType" required>
+                                <option value="Deposit">
+                                    Deposit
+                                </option>
+
+                                <option value="Withdrawal">
+                                    Withdrawal
+                                </option>
+                            </select>
+                        </div>
+
+
+                        <div class="field">
+                            <label for="amount">
+                                Amount (₹)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="amount"
+                                min="0.01"
+                                max="1000000000"
+                                step="0.01"
+                                placeholder="e.g. 2500.00"
+                                required>
+                        </div>
+
+
+                        <div class="field full">
+                            <label for="transactionDate">
+                                Transaction Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="transactionDate"
+                                required>
+                        </div>
+
+                    </div>
+
+
+                    <div class="button-row">
+
+                        <button
+                            type="submit"
+                            class="btn primary"
+                            id="addBtn">
+                            Add Transaction
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn secondary"
+                            id="updateBtn">
+                            Update Transaction
+                        </button>
+
+                        <button
+                            type="reset"
+                            class="btn outline">
+                            Clear
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+
+            <!-- SEARCH AND DELETE -->
+            <section class="panel" id="search-section">
+
+                <div class="panel-heading">
+                    <div>
+                        <h2>Search & Delete</h2>
+                        <p>Find transactions using their unique ID.</p>
+                    </div>
+                </div>
+
+
+                <div class="field">
+
+                    <label for="searchId">
+                        Transaction ID
+                    </label>
+
+                    <input
+                        type="number"
+                        id="searchId"
+                        min="1"
+                        max="2147483647"
+                        step="1"
+                        placeholder="Enter transaction ID">
+
+                </div>
+
+
+                <div class="button-row">
+
+                    <button
+                        type="button"
+                        class="btn primary"
+                        id="searchBtn">
+                        Search Transaction
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn danger"
+                        id="deleteBtn">
+                        Delete
+                    </button>
+
+                </div>
+
+
+                <!-- SEARCH RESULT -->
+                <div id="searchResult"
+                     class="search-result"
+                     hidden>
+
+                    <h3>Transaction Details</h3>
+
+                    <div id="searchDetails"></div>
+
+                    <button
+                        type="button"
+                        class="btn secondary"
+                        id="editFoundBtn">
+                        Edit This Transaction
+                    </button>
+
+                </div>
+
+
+                <!-- SPLAY TREE INFORMATION -->
+                <div class="info-box">
+
+                    <strong>
+                        How Splay Tree Search Works
+                    </strong>
+
+                    <p>
+                        When a transaction is found,
+                        the Splay Tree moves that transaction
+                        to the root using tree rotations.
+
+                        The updated tree structure is
+                        displayed in the visualization section.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- TRANSACTION HISTORY -->
+        <section class="panel" id="history">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>Transaction History</h2>
+                    <p>
+                        All bank transactions sorted
+                        by transaction ID.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="btn outline"
+                    id="refreshBtn">
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Account Number</th>
+                            <th>Transaction Type</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="transactionTable">
+
+                        <tr>
+                            <td colspan="6" class="empty">
+                                No transactions available.
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- SPLAY TREE VISUALIZATION -->
+        <section class="panel" id="tree-section">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>Splay Tree Visualization</h2>
+
+                    <p>
+                        Visual representation of
+                        the current Splay Tree structure.
+                    </p>
+                </div>
+
+                <span class="tree-tag">
+                    Live Structure
+                </span>
+
+            </div>
+
+
+            <div class="tree-container" id="treeContainer">
+
+                <svg
+                    id="treeSvg"
+                    role="img"
+                    aria-label="Splay Tree visualization">
+                </svg>
+
+                <p id="treeEmpty" class="empty">
+                    Add a transaction to visualize
+                    the Splay Tree.
+                </p>
+
+            </div>
+
+
+            <p class="tree-note">
+                Each node represents a transaction ID.
+                The highlighted node represents the
+                current root of the Splay Tree.
+            </p>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer>
+
+            Bank Transaction Search and Management System
+            | Advanced Data Structures PBL Project
+
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>
